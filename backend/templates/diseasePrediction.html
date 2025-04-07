@@ -1,0 +1,183 @@
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pet Disease Detection & Remedy Companion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    #container {
+      max-width: 600px;
+      margin: auto;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-weight: 600;
+      color: #333;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form input[type="file"] {
+      margin-bottom: 10px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #imagePreview {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    #imagePreview img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    #result {
+      margin-top: 20px;
+      background-color: #f8f9fa;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    #result p {
+      margin: 0;
+      font-size: 16px;
+      color: #333;
+    }
+
+  </style>
+  <style>
+    /* Styling for the button */
+    .button {
+      display: inline-block;
+      background-color: #4CAF50; /* Green */
+      border: none;
+      color: white;
+      padding: 15px 30px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      transition-duration: 0.4s;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+    
+    .button:hover {
+      background-color: #45a049; /* Darker Green */
+    }
+    
+    /* Styling for the button's container */
+    .button-container {
+      text-align: center;
+      margin-top: 50px;
+    }
+    </style>
+</head>
+<body>
+  <div id="container">
+    <h1>Skin Disease Detection & Remedy Companion</h1>
+
+    <form id="uploadForm" enctype="multipart/form-data">
+        <label for="image">Select Image:</label>
+        <input type="file" id="image" name="image" accept="image/*" required>
+        <button type="button" onclick="uploadImage()">Upload</button>
+    </form>
+
+    <div id="imagePreview">
+      <p id="fileName"></p>
+      <img id="previewImage" src="{% static 'home/pred.jpg' %}" alt="Uploaded Image" style="max-height: 300px;">
+    </div>
+
+    <div id="result">
+      <p>Our Skin Disease Prediction Model utilizes  image analysis to  predict a range of skin diseases. By analyzing visual data, it aids clinicians in identifying and treating skin conditions.</p>
+    </div>
+
+  </div>
+
+  <script>
+    function uploadImage() {
+        const form = document.getElementById('uploadForm');
+        const imageInput = document.getElementById('image');
+        const formData = new FormData(form);
+        const imagePreview = document.getElementById('imagePreview');
+        const uploadedImage = document.createElement('img');
+        uploadedImage.src = URL.createObjectURL(imageInput.files[0]);
+        uploadedImage.alt = 'Uploaded Image';
+        uploadedImage.style.maxWidth = '100%';
+        uploadedImage.style.maxHeight = '300px';
+        
+        // Clear previous content and append the new image
+        imagePreview.innerHTML = '';
+        imagePreview.appendChild(uploadedImage);
+    
+        // Display loading message or spinner while waiting for the API response
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = '<p>Loading...</p>';
+    
+        fetch('/api/predict/', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Display the result in the 'result' div
+            
+            resultDiv.innerHTML = `<p>${data.replay}</p><p>Description: ${data.suggestion}</p><div class="button-container">
+              <a class="button" href="#">File an appointment to a doctor</a>
+            </div>`;
+
+    
+            // Display the uploaded image
+            
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Display an error message in the 'result' div
+            resultDiv.innerHTML = '<p>Error occurred while processing the image. Please try again.</p>';
+        });
+    }
+    
+  </script>
+</body>
+</html>
+
+{% endblock %}
