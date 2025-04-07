@@ -111,6 +111,8 @@ python manage.py migrate
 python manage.py runserver
 ```
 
+---
+
 💡 Download the pre-trained skin disease detection model (`skin.h5`) from [Google Drive](https://drive.google.com/drive/folders/1gCBpwn1LIXcX5LCwoJoD95njOeZ5Y1Jh?usp=drive_link) and place it in the `backend/` directory before running the project.
 
  ---
